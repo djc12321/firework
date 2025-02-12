@@ -14,16 +14,12 @@ const textLines = [
     "翠竹摇曳诉岁华", "元宵悬影耀人间", "盈盈笑语贺丰年"
 ];
 
-let currentLine = 0;
-const textAlpha = 1;
-const lineHeight = 60; // 设置行间距
+let currentLine = 0;  // 当前显示的文本
 let showText = false; // 是否显示文本
 
 // 获取背景音乐元素
 const backgroundMusic = document.getElementById('backgroundMusic');
-
-// 播放背景音乐
-backgroundMusic.play();
+backgroundMusic.play(); // 播放背景音乐
 
 // 绘制文本
 function drawText() {
@@ -34,8 +30,6 @@ function drawText() {
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText(textLines[currentLine], canvas.width / 2, canvas.height / 2);
-
-    // 每 2 秒切换到下一行文本
 }
 
 // 创建烟花类
@@ -137,6 +131,32 @@ function animate() {
 document.getElementById('surpriseButton').addEventListener('click', () => {
     showText = true; // 点击按钮后开始显示文本内容
     document.getElementById('surpriseButton').style.display = 'none'; // 隐藏按钮
+});
+
+// ** 修正文本切换问题 **
+// 控制文本显示顺序，每个文本显示 2 秒
+function displayTextWithInterval() {
+    const interval = setInterval(() => {
+        if (currentLine < textLines.length - 1) {
+            currentLine++; // 显示下一个文本
+        } else {
+            clearInterval(interval); // 如果已经显示完所有文本，停止切换
+        }
+    }, 2000);  // 每 2 秒切换一次文本
+}
+
+// 启动文本显示逻辑
+displayTextWithInterval();
+
+// 鼠标跟随效果
+document.addEventListener('mousemove', (e) => {
+    let circle = document.createElement('div');
+    circle.classList.add('circle');
+    circle.style.left = `${e.pageX - 15}px`;  // 让光圈跟随鼠标
+    circle.style.top = `${e.pageY - 15}px`;
+    document.body.appendChild(circle);
+
+    setTimeout(() => circle.remove(), 1000);  // 1秒后移除光圈
 });
 
 // 启动动画
